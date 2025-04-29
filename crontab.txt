@@ -1,0 +1,1 @@
+*/5 * * * * ~/.pycloudflare/bin/python ~/.cloudflare/main.py > /tmp/cloudflare.log 2>&1
