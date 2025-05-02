@@ -29,7 +29,8 @@ def fetch_cloudflare_records(zone_id: str) -> dict | None:
     }
 
     response = requests.get(url, headers=headers)
-    logging.info(f"HTTP/1.1 - {response.status_code} {response.reason} - GET {url}")
+    logging.info(
+        f"HTTP/1.1 - {response.status_code} {response.reason} - GET {url}")
 
     if response.status_code != 200:
         return None
@@ -51,14 +52,15 @@ def notify_cloudflare_dns(
 
     data = {
         "type": "A",
-        "name": environ.get("DOMAIN_NAME"),
+        "name": domain,
         "content": ip,
         "ttl": 120,
         "proxied": True,
     }
 
     response = requests.put(url, headers=headers, json=data)
-    logging.info(f"HTTP/1.1 - {response.status_code} {response.reason} - PUT {url}")
+    logging.info(
+        f"HTTP/1.1 - {response.status_code} {response.reason} - PUT {url}")
 
     if response.status_code != 200:
         logging.error(f"Response: {response.text}")
@@ -81,16 +83,18 @@ def update_each_domain(domain: str, zone_id: str, record_id: str, ip: str):
     records = [x for x in records if x["name"] == domain]
 
     if len(records) == 0:
-        logging.warning("No DNS Record was found for the specified domain name.")
+        logging.warning(
+            "No DNS Record was found for the specified domain name.")
         return
 
     record_ip = records[0]["content"]
 
     if record_ip == ip:
-        logging.info(f"Domain IP is up-to-date. IP: {ip} | Record IP: {record_ip}")
+        logging.info(
+            f"Domain IP is up-to-date. IP: {ip} | Record IP: {record_ip}")
         return
 
-    is_updated = notify_cloudflare_dns(domain_name, zone_id, record_id, ip)
+    is_updated = notify_cloudflare_dns(domain, zone_id, record_id, ip)
 
     if is_updated:
         return
