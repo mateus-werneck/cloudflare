@@ -54,8 +54,6 @@ def notify_cloudflare_dns(
         "type": "A",
         "name": domain,
         "content": ip,
-        "ttl": 120,
-        "proxied": True,
     }
 
     response = requests.put(url, headers=headers, json=data)
